@@ -18,17 +18,14 @@
 /* STRUCTURES                                                                 */
 /******************************************************************************/
 typedef struct monome {
-    int coeff;
-    int degre;
-    } Monome;
+	int coeff;
+	int degre;
+	} Monome;
 
 typedef struct polynome {
-    Monome      tab_monomes[MAXMONOME];
-    int         nb_monomes;
-    } Polynome;
-
-
-
+	Monome	tab_monomes[MAXMONOME];
+	int	nb_monomes;
+	} Polynome;
 
 /******************************************************************************/
 /* PROTOTYPES                                                                 */
@@ -37,6 +34,12 @@ void initPolynome(Polynome *);
 void affichePolynome(Polynome);
 void standardiseDescription(char *s, char *d);
 void str2Polynome(char *str,Polynome *p);
+void multiplieMonomePolynome(Polynome *p, Monome m);
+void ajouteMonomePolynome(Polynome *p, Monome m);
+void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2);
+void ajoutePolynomePolynome2(Polynome *p1, Polynome *p2);
+void multipliePolynomePolynome(Polynome *p1, Polynome *p2);
+
 
 
 
