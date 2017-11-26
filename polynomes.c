@@ -12,7 +12,7 @@ int main(void)
 {
 	system("clear");
 
-	//Test affichage
+	/* //Test affichage
 	Polynome p;
 	initPolynome(&p);
 
@@ -50,7 +50,7 @@ int main(void)
 
 	ajouteMonomePolynome(&p_Ajout0, m_Ajout);
 	affichePolynome(p_Ajout0);
-	printf("\n");
+	printf("\n"); */
 
 	//Test ajout polynôme à un autre polynôme
 
@@ -58,8 +58,8 @@ int main(void)
 	initPolynome(&p_Ajout1);
 	initPolynome(&p_Ajout2);
 
-	str2Polynome("X^5-3X+2", &p_Ajout1);
-	str2Polynome("X^5-3X+2", &p_Ajout2);
+	str2Polynome("X^5-3X^2+2", &p_Ajout1);
+	str2Polynome("X^6-3X^3+2", &p_Ajout2);
 
 	printf("Ajout de : ");
 	affichePolynome(p_Ajout1);
@@ -86,7 +86,7 @@ int main(void)
 
 	affichePolynome(p_Ajout1);
 	printf("\n");
-	
+
 	//Test multiplication polynôme à un autre polynôme
 
 	Polynome p_Mult1, p_Mult2;
@@ -189,33 +189,27 @@ void ajouteMonomePolynome(Polynome *p, Monome m)
 {
 	int i, l;
 
-	
-	for (i=0;i<p->nb_monomes;i++)
+	for (i=0;i<p->nb_monomes;i++) //Pour chaque monôme du polynôme
 	{
-		if (p->tab_monomes[i].degre == m.degre)
+		if (p->tab_monomes[i].degre == m.degre) //On vérifie si le dégré du monôme donné est le même
 		{
-			p->tab_monomes[i].coeff += m.coeff;
-			return;
+			p->tab_monomes[i].coeff += m.coeff; //Alors on ajoute les 2 coefficients
+			return; //Et on quitte la fonction
 		}
-	}
 
-	for (l=0;l<p->nb_monomes;l++)
-	{
-		if (p->tab_monomes[l].degre < m.degre)
+		if (p->tab_monomes[i].degre < m.degre) //On vérifie pour placer le monôme donné au bon endroit
 		{
-			p->nb_monomes += 1;
+			p->nb_monomes += 1; //On ajoute un monôme au compte total
 
-			for (i=p->nb_monomes;i>l;i--)
+			for (l=p->nb_monomes;l>i;l--) //On décale tous les monômes qui ont un degré inférieur au monôme donné
 			{
-				p->tab_monomes[i] = p->tab_monomes[i-1];
+				p->tab_monomes[l] = p->tab_monomes[l-1];
 			}
 
-			p->tab_monomes[l] = m;
+			p->tab_monomes[i] = m; //On insère le monôme donné au bon endroit
 
-			break;
-		} 
-
-
+			break; //On quitte la boucle puisqu'on a fini le travail
+		}
 	}
 
 }
@@ -227,13 +221,13 @@ void ajouteMonomePolynome(Polynome *p, Monome m)
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
-void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2)
+void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2) //Dans le pire des cas la complexité de l'alorithme est de 0(n³) sinon dans le meilleur des cas c'est 0(n²)
 {
 	int i;
 
-	for (i=0;i<p2->nb_monomes;i++)
+	for (i=0;i<p2->nb_monomes;i++) //Pour chaque monôme du polynôme donné
 	{
-		ajouteMonomePolynome(p1, p2->tab_monomes[i]);
+		ajouteMonomePolynome(p1, p2->tab_monomes[i]); //On ajoute le ième monôme du polynôme
 	}
 
 }
@@ -247,7 +241,36 @@ void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2)
 
 void ajoutePolynomePolynome2(Polynome *p1, Polynome *p2)
 {
-
+	Polynome resultat;
+	initPolynome(&resultat); // on initialise le polynome qui sera le resultat
+	resultat.nb_monomes = p2->nb_monomes + p1->nb_monomes;
+	int compteur;        
+	
+	for(compteur = 0; compteur < resultat.nb_monomes; compteur++)
+	{
+		printf ("\n %d test ", resultat.nb_monomes);
+		if (p1->tab_monomes[compteur].degre == p2->tab_monomes[compteur].degre)
+		{
+			resultat.tab_monomes[compteur].coeff = p1->tab_monomes[compteur].coeff + p2->tab_monomes[compteur].coeff;
+			resultat.tab_monomes[compteur].degre = p1->tab_monomes[compteur].degre;
+			resultat.nb_monomes--;
+		}
+		if(p1->tab_monomes[compteur%(p1->nb_monomes +1)].degre < p2->tab_monomes[compteur%(p2->nb_monomes +1)].degre)
+		{
+			printf("P1 doit aller a droite");
+			resultat.tab_monomes[compteur] = p1->tab_monomes[compteur%(p1->nb_monomes + 1)];
+		}
+		if (p1->tab_monomes[compteur].degre > p2->tab_monomes[compteur].degre)
+		{
+			printf("P2 doit aller a droite");
+			resultat.tab_monomes[compteur] = p2->tab_monomes[compteur%(p2->nb_monomes +1)];
+			
+		}
+		
+		
+		*p1 = resultat;
+	}
+	
 }
 
 /******************************************************************************/
@@ -377,3 +400,4 @@ void str2Polynome(char *str, Polynome *p)
 	p->nb_monomes = nb_monomes;
 	free(str2);
 }
+
