@@ -52,7 +52,7 @@ int main(void)
 	affichePolynome(p_Ajout0);
 	printf("\n"); */
 
-	//Test ajout polynôme à un autre polynôme
+	/* //Test ajout polynôme à un autre polynôme
 
 	Polynome p_Ajout1, p_Ajout2;
 	initPolynome(&p_Ajout1);
@@ -74,7 +74,7 @@ int main(void)
 
 	//Test ajout polynôme à un autre polynôme 2
 
-	str2Polynome("X^5-3X+2", &p_Ajout1);
+	str2Polynome("X^5-3X^2+2", &p_Ajout1);
 
 	printf("Ajout de : ");
 	affichePolynome(p_Ajout1);
@@ -85,7 +85,7 @@ int main(void)
 	ajoutePolynomePolynome2(&p_Ajout1, &p_Ajout2);
 
 	affichePolynome(p_Ajout1);
-	printf("\n");
+	printf("\n"); */
 
 	//Test multiplication polynôme à un autre polynôme
 
@@ -97,9 +97,9 @@ int main(void)
 	str2Polynome("X^5-3X+2", &p_Mult2);
 
 	printf("Multiplication de : ");
-	affichePolynome(p_Ajout1);
+	affichePolynome(p_Mult1);
 	printf(" avec : ");
-	affichePolynome(p_Ajout2);
+	affichePolynome(p_Mult2);
 	printf(" = ");
 
 	multipliePolynomePolynome(&p_Mult1, &p_Mult2);
@@ -132,7 +132,7 @@ void affichePolynome(Polynome p)
 {
 	int i;
 
-	for (i=0;i<p.nb_monomes;i++) //On boucle sur tout les différents polynômes
+	for (i = 0; i < p.nb_monomes; i++) //On boucle sur tout les différents polynômes
 	{
 		if (p.tab_monomes[i].coeff == 1) // Cas où c'est X¹
 			printf("X^%d", p.tab_monomes[i].degre);
@@ -146,17 +146,16 @@ void affichePolynome(Polynome p)
 				printf("-X");
 			else //Sinon si le coeff est < -1 et un degré 1
 				printf("%dX", p.tab_monomes[i].coeff);
-		}	
+		}
 		else if (p.tab_monomes[i].degre == 1) //Si nX¹ avec n > 1
 			printf("%dX", p.tab_monomes[i].coeff);
 		else if (!p.tab_monomes[i].degre) // Si nX⁰ ce qui veut dire que nous avons juste n
 			printf("%d", p.tab_monomes[i].coeff);
 		else //Si nX^m avec n > 1 et m > 1
-			printf("%dX^%d", p.tab_monomes[i].coeff, p.tab_monomes[i].degre); 
-		
-		if ((i + 1) < p.nb_monomes && p.tab_monomes[i+1].coeff >= 0) //Pour ajouter un + entre chaque monôme et enlever le + en fin de chaîne 
+			printf("%dX^%d", p.tab_monomes[i].coeff, p.tab_monomes[i].degre);
+
+		if ((i + 1) < p.nb_monomes && p.tab_monomes[i + 1].coeff >= 0) //Pour ajouter un + entre chaque monôme et enlever le + en fin de chaîne
 			printf("+");
-		
 	}
 }
 
@@ -171,7 +170,7 @@ void multiplieMonomePolynome(Polynome *p, Monome m)
 {
 	int i;
 
-	for (i=0;i<p->nb_monomes;i++) //Pour chaque monôme du polynôme
+	for (i = 0; i < p->nb_monomes; i++) //Pour chaque monôme du polynôme
 	{
 		p->tab_monomes[i].coeff *= m.coeff; //On le multiplie par le coeff donné du monôme
 		p->tab_monomes[i].degre += m.degre; //On additionne les dégrés avec le monôme donné
@@ -189,21 +188,21 @@ void ajouteMonomePolynome(Polynome *p, Monome m)
 {
 	int i, l;
 
-	for (i=0;i<p->nb_monomes;i++) //Pour chaque monôme du polynôme
+	for (i = 0; i < p->nb_monomes; i++) //Pour chaque monôme du polynôme
 	{
 		if (p->tab_monomes[i].degre == m.degre) //On vérifie si le dégré du monôme donné est le même
 		{
 			p->tab_monomes[i].coeff += m.coeff; //Alors on ajoute les 2 coefficients
-			return; //Et on quitte la fonction
+			return;								//Et on quitte la fonction
 		}
 
 		if (p->tab_monomes[i].degre < m.degre) //On vérifie pour placer le monôme donné au bon endroit
 		{
 			p->nb_monomes += 1; //On ajoute un monôme au compte total
 
-			for (l=p->nb_monomes;l>i;l--) //On décale tous les monômes qui ont un degré inférieur au monôme donné
+			for (l = p->nb_monomes; l > i; l--) //On décale tous les monômes qui ont un degré inférieur au monôme donné
 			{
-				p->tab_monomes[l] = p->tab_monomes[l-1];
+				p->tab_monomes[l] = p->tab_monomes[l - 1];
 			}
 
 			p->tab_monomes[i] = m; //On insère le monôme donné au bon endroit
@@ -211,66 +210,66 @@ void ajouteMonomePolynome(Polynome *p, Monome m)
 			break; //On quitte la boucle puisqu'on a fini le travail
 		}
 	}
-
 }
 
 /******************************************************************************/
 /* ajoutePolynomePolynome1 - Ajoute un polynôme à un autre polynôme           */
-/*                                                                            */
+/* Compléxité : O(n³) dans le pire des cas sinon O(n²) dans le meilleur       */
 /* INPUT  : Les 2 polynômes à multiplier                                      */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
-void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2) //Dans le pire des cas la complexité de l'alorithme est de 0(n³) sinon dans le meilleur des cas c'est 0(n²)
+void ajoutePolynomePolynome1(Polynome *p1, Polynome *p2)
 {
 	int i;
 
-	for (i=0;i<p2->nb_monomes;i++) //Pour chaque monôme du polynôme donné
+	for (i = 0; i < p2->nb_monomes; i++) //Pour chaque monôme du polynôme donné
 	{
 		ajouteMonomePolynome(p1, p2->tab_monomes[i]); //On ajoute le ième monôme du polynôme
 	}
-
 }
 
 /******************************************************************************/
 /* ajoutePolynomePolynome2 - Ajoute un polynôme à un autre polynôme           */
-/*                                                                            */
+/* Compléxité : linéaire donc O(n*m)                                          */
 /* INPUT  : Les 2 polynômes à ajouter                                         */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
 void ajoutePolynomePolynome2(Polynome *p1, Polynome *p2)
 {
-	Polynome resultat;
-	initPolynome(&resultat); // on initialise le polynome qui sera le resultat
-	resultat.nb_monomes = p2->nb_monomes + p1->nb_monomes;
-	int compteur;        
+	Polynome resultat; //On initialise le polynôme de résultat
+	initPolynome(&resultat); //On initialise le polynome qui sera le resultat
+	int i1 = 0, i2 = 0, j=0; //On initialise les compteurs afin de lire dans chaque polynôme le monôme que l'on souhaite
 	
-	for(compteur = 0; compteur < resultat.nb_monomes; compteur++)
+	while(i1 < p1->nb_monomes && i2 < p2->nb_monomes) //On boucle tant qu'un des compteurs n'a pas atteint la taille du nb_monome des polynômes donnés 
 	{
-		printf ("\n %d test ", resultat.nb_monomes);
-		if (p1->tab_monomes[compteur].degre == p2->tab_monomes[compteur].degre)
+		if (p1->tab_monomes[i1].degre > p2->tab_monomes[i2].degre) ////Si le degré du monôme i1 du premier polynôme est supérieur au dégré du monôme i2 du second
 		{
-			resultat.tab_monomes[compteur].coeff = p1->tab_monomes[compteur].coeff + p2->tab_monomes[compteur].coeff;
-			resultat.tab_monomes[compteur].degre = p1->tab_monomes[compteur].degre;
-			resultat.nb_monomes--;
+			resultat.tab_monomes[j] = p1->tab_monomes[i1]; //Alors le polynôme résultat aura comme monôme max le monôme de i1 du polynôme 1
+			i1++;
 		}
-		if(p1->tab_monomes[compteur%(p1->nb_monomes +1)].degre < p2->tab_monomes[compteur%(p2->nb_monomes +1)].degre)
+		else if(p1->tab_monomes[i1].degre < p2->tab_monomes[i2].degre) //Sinon s'il s'agit de l'inverse (sans l'égalité)
 		{
-			printf("P1 doit aller a droite");
-			resultat.tab_monomes[compteur] = p1->tab_monomes[compteur%(p1->nb_monomes + 1)];
+			resultat.tab_monomes[j] = p2->tab_monomes[i2]; //Alors le polynôme résultat aura comme monôme max le monôme de i2 du polynôme 2
+			i2++;
 		}
-		if (p1->tab_monomes[compteur].degre > p2->tab_monomes[compteur].degre)
+		else //Sinon les monômes ont le même degré
 		{
-			printf("P2 doit aller a droite");
-			resultat.tab_monomes[compteur] = p2->tab_monomes[compteur%(p2->nb_monomes +1)];
-			
+			resultat.tab_monomes[j].coeff = p1->tab_monomes[i1].coeff + p2->tab_monomes[i2].coeff; //On ajoute alors leurs coéfficients
+			resultat.tab_monomes[j].degre = p1->tab_monomes[i1].degre; //Comme les degrés sont les mêmes on met le même
+			i2++;
+			i1++;
 		}
+
+		//On incrémente les compteurs
+		resultat.nb_monomes++;
+		j++;
 		
-		
-		*p1 = resultat;
-	}
-	
+	 }
+
+	*p1 = resultat; //On stocke le résultat dans le polynôme 
+
 }
 
 /******************************************************************************/
@@ -282,7 +281,9 @@ void ajoutePolynomePolynome2(Polynome *p1, Polynome *p2)
 
 void multipliePolynomePolynome(Polynome *p1, Polynome *p2)
 {
-
+	Polynome resultat;
+	initPolynome(&resultat);
+	//int i = 0;
 }
 
 /******************************************************************************/
@@ -327,7 +328,7 @@ void standardiseDescription(char *s, char *d)
 				*e = *l;
 			else // caractères erronés
 			{
-				e--;           // on recule
+				e--;		   // on recule
 				if (*l != ' ') // et on signale (sauf si espace)
 					fprintf(stderr, "Err: caractère '%c' ignoré\n", *l);
 			}
@@ -366,7 +367,7 @@ void str2Polynome(char *str, Polynome *p)
 	while (tok != NULL)
 	{
 		ptr = strchr(tok, 'X'); // Y a-t-il un X dans le token?
-		if (ptr)                // Oui, il y a un X
+		if (ptr)				// Oui, il y a un X
 		{
 			//Y a-t'il un '^nombre' derriere le X
 			if (sscanf(tok, "%dX^%d", &coeff, &degre) != 2) // Cas 5X^2
@@ -400,4 +401,3 @@ void str2Polynome(char *str, Polynome *p)
 	p->nb_monomes = nb_monomes;
 	free(str2);
 }
-
