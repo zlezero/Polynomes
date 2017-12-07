@@ -20,6 +20,7 @@ int main(void)
 	//str2Polynome("5x7-x^6-x5  +-2- 12x^5+2x-3", &p);
 	str2Polynome("3X^2-X+5", &p);
 
+	printf("Affichage du polynôme : ");
 	affichePolynome(p); 
 	printf("\n");
 	
@@ -139,6 +140,8 @@ void affichePolynome(Polynome p)
 		
 		if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre != 0) // Cas où c'est X¹
 			printf("X^%d", p.tab_monomes[i].degre);
+		else if (!p.tab_monomes[i].degre) // Si nX⁰ ce qui veut dire que nous avons juste n
+			printf("%d", p.tab_monomes[i].coeff);
 		else if (p.tab_monomes[i].coeff < 0) //Sinon si on obtient nX avec n négatif
 		{
 			if (p.tab_monomes[i].degre > 1 && p.tab_monomes[i].coeff == -1) //Dans le cas où on a -X^n avec n > 1
@@ -152,12 +155,10 @@ void affichePolynome(Polynome p)
 		}
 		else if (p.tab_monomes[i].degre == 1) //Si nX¹ avec n > 1
 			printf("%dX", p.tab_monomes[i].coeff);
-		else if (!p.tab_monomes[i].degre) // Si nX⁰ ce qui veut dire que nous avons juste n
-			printf("%d", p.tab_monomes[i].coeff);
-		else //Si nX^m avec n > 1 et m > 1
+		else if (p.tab_monomes[i].coeff != 0)//Si nX^m avec n > 1 et m > 1
 			printf("%dX^%d", p.tab_monomes[i].coeff, p.tab_monomes[i].degre);
 
-		if ((i + 1) < p.nb_monomes && p.tab_monomes[i + 1].coeff >= 0) //Pour ajouter un + entre chaque monôme et enlever le + en fin de chaîne
+		if ((i + 1) < p.nb_monomes && p.tab_monomes[i + 1].coeff >= 1) //Pour ajouter un + entre chaque monôme et enlever le + en fin de chaîne
 			printf("+");
 	}
 }
@@ -288,29 +289,56 @@ void ajoutePolynomePolynome2(Polynome *p1, Polynome *p2, Polynome *resultat)
 
 void multipliePolynomePolynome(Polynome *p1, Polynome *p2, Polynome *resultat)
 {
+	//int i;
+
+	Polynome stock = *p2;
 	int i,l;
-	Polynome tampon[p1->nb_monomes];
-
-	resultat->nb_monomes = 0;
-
-	for(i=0; i<p1->nb_monomes;i++)
+	
+	for (l=0;l<p1->nb_monomes;l++)
 	{
-		tampon[i]=*p1;
-		l++;
+		for(i = 0; i< p1->nb_monomes;i++)
+		{
+			stock=*p2;
+			multiplieMonomePolynome( &stock, p1->tab_monomes[i], &stock);
+		}
+		ajoutePolynomePolynome2(&stock, resultat, resultat);
 	}
+	/*for (i=1; i<0;i++)
+	{	
+		printf("boucle");
+		multiplieMonomePolynome(p1, p2->tab_monomes[i], &stock);
+		affichePolynome(stock);
+		printf("\n resultat :");
+		ajoutePolynomePolynome1(&stock, resultat, resultat);
+		affichePolynome(*resultat);
+		printf("\n stock : ");
+	}
+*/
+	resultat->nb_monomes=6;
 	
-	multiplieMonomePolynome(&(tampon[0]),p2->tab_monomes[0], p2);
-	*resultat = tampon[0];
-	
-	affichePolynome(tampon[0]);
-	printf("\n");
+}
 
-	for (i=1; i<l;i++)
-	{
-		multiplieMonomePolynome(&(tampon[i]), p2->tab_monomes[i], p2);
-		ajoutePolynomePolynome2(resultat, &(tampon[i]), resultat);
-	}
+/******************************************************************************/
+/* puissancePolynome - Multiplie un polynôme à un autre polynôme              */
+/*                                                                            */
+/* INPUT  : Les 2 polynômes à multiplier                                      */
+/* OUTPUT : néant                                                             */
+/******************************************************************************/
+
+void puissancePolynome(Polynome *p1, int puissance, Polynome *resultat)
+{
+	int i;
 	
+	for(i=0;i<puissance;i++)
+	{
+		multipliePolynomePolynome(p1, p1, resultat);
+		
+		if (p1->nb_monomes > 50)
+		{
+			printf("Bouchon = trop loin !");
+			break;
+		}
+	}
 }
 
 /******************************************************************************/
