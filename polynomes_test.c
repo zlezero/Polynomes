@@ -22,7 +22,7 @@ int main(void)
 
 	printf("Affichage du polynôme : ");
 	affichePolynome(p); 
-	printf("\n");
+	printf("\n \n"); 
 	
 	//Test de la mutiplication
 	Polynome p_mult;
@@ -36,7 +36,7 @@ int main(void)
 	printf("Multiplication de : -2X²x(X⁵-3X+2) = ");
 
 	affichePolynome(p_res);
-	printf("\n");
+	printf("\n \n"); 
 
 	//Test ajout monôme à un polynôme
 
@@ -44,15 +44,15 @@ int main(void)
 	Monome m_Ajout = {-2, 3};
 
 	initPolynome(&p_Ajout0);
-	str2Polynome("X^5-3X^2+2", &p_Ajout0);
+	str2Polynome("X^5-3X^3", &p_Ajout0);
 
-	printf("Ajout de : -2X³+(");
+	printf("Ajout de monôme : -2X³+(");
 	affichePolynome(p_Ajout0);
 	printf(") = ");
 
 	ajouteMonomePolynome(p_Ajout0, m_Ajout, &p_res);
 	affichePolynome(p_res);
-	printf("\n");
+	printf("\n \n");
 
 	//Test ajout polynôme à un autre polynôme
 
@@ -62,10 +62,10 @@ int main(void)
 
 	//str2Polynome("X^5-3X^2+2", &p_Ajout1);
 	//str2Polynome("X^6-3X^3+2", &p_Ajout2);
-	str2Polynome("X^5-3X^2", &p_Ajout1);
-	str2Polynome("X^7+2X^6+4X+2", &p_Ajout2);
+	str2Polynome("2X^7+X^5-3X^2", &p_Ajout1);
+	str2Polynome("X^7+2X^6", &p_Ajout2);
 
-	printf("Ajout de : ");
+	printf("Ajout de polynôme à polynôme 1 : ");
 	affichePolynome(p_Ajout1);
 	printf(" avec : ");
 	affichePolynome(p_Ajout2);
@@ -78,7 +78,7 @@ int main(void)
 
 	//Test ajout polynôme à un autre polynôme 2
 
-	printf("Ajout de : ");
+	printf("Ajout de polynôme à polynôme 2 : ");
 	affichePolynome(p_Ajout1);
 	printf(" avec : ");
 	affichePolynome(p_Ajout2);
@@ -91,7 +91,7 @@ int main(void)
 
 	//Test multiplication polynôme à un autre polynôme
 
-	Polynome p_Mult1, p_Mult2;
+	/* Polynome p_Mult1, p_Mult2;
 	initPolynome(&p_Mult1);
 	initPolynome(&p_Mult2);
 
@@ -108,7 +108,7 @@ int main(void)
 
 	multipliePolynomePolynome(p_Mult1, p_Mult2, &p_res);
 
-	affichePolynome(p_res);
+	affichePolynome(p_res); */
 
 	//Fin
 	printf("\n");
@@ -141,8 +141,9 @@ void affichePolynome(Polynome p)
 
 	for (i = 0; i < p.nb_monomes; i++) //On boucle sur tout les différents polynômes
 	{
-		
-		if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre != 0) // Cas où c'est X¹
+		if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre == 1)
+			printf("X");
+		else if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre != 0) // Cas où c'est 1X
 			printf("X^%d", p.tab_monomes[i].degre);
 		else if (!p.tab_monomes[i].degre) // Si nX⁰ ce qui veut dire que nous avons juste n
 			printf("%d", p.tab_monomes[i].coeff);
@@ -214,9 +215,12 @@ void ajouteMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 			*resultat = Resultat;
 			return;	//Et on quitte la fonction
 		}
-		else if (Resultat.tab_monomes[i].degre < m.degre) //On vérifie pour placer le monôme donné au bon endroit
+		else if (Resultat.tab_monomes[i].degre < m.degre || (Resultat.tab_monomes[i].degre > m.degre && i == Resultat.nb_monomes - 1)) //On vérifie pour placer le monôme donné au bon endroit
 		{
 			Resultat.nb_monomes += 1; //On ajoute un monôme au compte total
+
+			if (Resultat.tab_monomes[i].degre > m.degre)
+				i += 1;
 
 			for (l = Resultat.nb_monomes; l > i; l--) //On décale tous les monômes qui ont un degré inférieur au monôme donné
 			{
@@ -304,7 +308,7 @@ void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat)
 		j++;
 
 		if (p1.nb_monomes == p2.nb_monomes)
-			Resultat.nb_monomes+=2;
+			Resultat.nb_monomes++;
 		else
 			Resultat.nb_monomes++;
 	 }
@@ -323,26 +327,26 @@ void multipliePolynomePolynome(Polynome p1, Polynome p2, Polynome *resultat)
 {
 	Polynome stock;
 	initPolynome(&stock);
-	//int i;
+	int i;
 
 	stock = p1;
-	multiplieMonomePolynome(stock, p2.tab_monomes[0], resultat);
-	//ajoutePolynomePolynome1(resultat, &stock, resultat);
-	//*resultat = stock;
-	multiplieMonomePolynome(p1, p2.tab_monomes[1], &stock);
+	//multiplieMonomePolynome(stock, p2.tab_monomes[0], resultat);
+	//ajoutePolynomePolynome1(*resultat, stock, resultat);
+	*resultat = stock;
+	/* multiplieMonomePolynome(p1, p2.tab_monomes[1], &stock);
 	printf("\n Affichage stock : ");
 	affichePolynome(stock);
 	printf("\n Affichage résultat : ");
 	ajoutePolynomePolynome1(*resultat, stock, resultat);
 	affichePolynome(*resultat);
-	printf("\n Affichage fin : ");
+	printf("\n Affichage fin : "); */
 
-	/* for(i = 1; i< p1->nb_monomes;i++)
+	for(i = 0; i< p1.nb_monomes;i++)
 	{
 		initPolynome(&stock);
-		multiplieMonomePolynome(p1, p2->tab_monomes[i], &stock);
-		ajoutePolynomePolynome1(resultat, &stock, resultat);
-	} */
+		multiplieMonomePolynome(p1, p2.tab_monomes[i], &stock);
+		ajoutePolynomePolynome1(*resultat, stock, resultat);
+	}
 
 	/*for (i=1; i<0;i++)
 	{	
