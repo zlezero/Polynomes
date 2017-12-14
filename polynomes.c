@@ -10,6 +10,21 @@
 /******************************************************************************/
 int main(void)
 {
+
+	Main_Menu(); //On lance le menu principal
+
+	//Fin
+
+	system("clear");
+
+	printf("Merci d'avoir utilisé notre programme !");
+	printf("\n");
+	
+	return 0;
+}
+
+void Demonstrations()
+{
 	system("clear");
 
 	//Test affichage
@@ -127,17 +142,91 @@ int main(void)
 
 	affichePolynome(p_res);
 
-	//Fin
 	printf("\n");
-	return 0;
+
+	//Test tri polynôme
+
+	str2Polynome("3X^5+2X^6+3-X^7", &p_Mult1);
+	printf("Tri de : ");
+	affichePolynome(p_Mult1);
+	printf(" = ");
+
+	triPolynome(p_Mult1, &p_res);
+	
+	affichePolynome(p_res);
+
+	printf("\n");
+
+	//Test reduire polynôme trié
+
+	str2Polynome("3X^5+2X^5+3X^4-3X+4", &p_Mult1);
+	printf("Réduction de : ");
+	affichePolynome(p_Mult1);
+	printf(" = ");
+
+	reduitPolynomeTrie(p_Mult1, &p_res);
+
+	affichePolynome(p_res);
+
+	printf("\n \n");
+
+	printf("Appuyez sur Entrée pour continuer !");
+
+	viderBuffer();
+	getchar();
+
+}
+
+void Main_Menu()
+{
+	int i = -1;
+
+	while (i < 0 || i > 3)
+	{
+		system("clear");
+		
+		printf("== Ultra Polynômes Calculator == \n");
+		printf("1 - Démonstrations\n");
+		printf("2 - Calculatrice\n");
+		printf("3 - Quitter\n\n");
+
+		printf("Entrez votre proposition (1/2/3) : ");
+		scanf("%d", &i);
+
+		switch (i)
+		{
+			case 1:
+				Demonstrations();
+				i = -1;
+				break;
+			case 2:
+				printf("Calculatrice");
+				break;
+			case 3:
+				break;
+			default:
+				i = -1;
+		}
+
+	}
+}
+
+void viderBuffer()
+{
+	int c = 0;
+	while (c != '\n' && c != EOF)
+	{
+		c = getchar();
+	}
 }
 
 /******************************************************************************/
 /* initPolynomes - initialise le polynome fourni                              */
 /*                                                                            */
-/* INPUT  : polynome (pointeur) à initialiser                                 */
+/* INPUT  : Polynôme (pointeur) à initialiser                                 */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
+
 void initPolynome(Polynome *p)
 {
 	p->nb_monomes = 0;
@@ -146,9 +235,10 @@ void initPolynome(Polynome *p)
 /******************************************************************************/
 /* affichePolynome - self explained                                           */
 /*                                                                            */
-/* INPUT  : polynome à afficher                                               */
+/* INPUT  : Polynôme à afficher                                               */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
+
 void affichePolynome(Polynome p)
 {
 	int i;
@@ -188,7 +278,7 @@ void affichePolynome(Polynome p)
 /******************************************************************************/
 /* multiplieMonomePolynome - Multiplie un polynôme donné par un monôme        */
 /*                                                                            */
-/* INPUT  : polynome à multiplier + monôme                                    */
+/* INPUT  : Polynôme à multiplier + Monôme / Le polynôme résultat             */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -213,7 +303,7 @@ void multiplieMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 /******************************************************************************/
 /* ajouteMonomePolynome - Ajoute un monôme à un polynôme                      */
 /*                                                                            */
-/* INPUT  : Monôme à ajouter + polynôme                                       */
+/* INPUT  : Monôme à ajouter + polynôme / Le polynôme résultat                */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -256,7 +346,7 @@ void ajouteMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 /******************************************************************************/
 /* ajoutePolynomePolynome1 - Ajoute un polynôme à un autre polynôme           */
 /* Compléxité : O(n³) dans le pire des cas sinon O(n²) dans le meilleur       */
-/* INPUT  : Les 2 polynômes à multiplier                                      */
+/* INPUT  : Les 2 polynômes à ajouter / Le polynôme résultat                  */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -297,7 +387,7 @@ void ajoutePolynomePolynome1(Polynome p1, Polynome p2, Polynome *resultat)
 /******************************************************************************/
 /* ajoutePolynomePolynome2 - Ajoute un polynôme à un autre polynôme           */
 /* Compléxité : linéaire donc O(n*m)                                          */
-/* INPUT  : Les 2 polynômes à ajouter                                         */
+/* INPUT  : Les 2 polynômes à ajouter / Le polynôme résultat                  */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -366,7 +456,7 @@ void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat)
 /******************************************************************************/
 /* multipliePolynomePolynome - Multiplie un polynôme à un autre polynôme      */
 /*                                                                            */
-/* INPUT  : Les 2 polynômes à multiplier                                      */
+/* INPUT  : Les 2 polynômes à multiplier / Le polynôme résultat               */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -389,7 +479,7 @@ void multipliePolynomePolynome(Polynome p1, Polynome p2, Polynome *resultat)
 /******************************************************************************/
 /* puissancePolynome - Multiplie un polynôme à un autre polynôme              */
 /*                                                                            */
-/* INPUT  : Les 2 polynômes à multiplier                                      */
+/* INPUT  : Le polynôme à multiplier / La puissance / Le polynôme résultat    */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -422,6 +512,49 @@ void puissancePolynome(Polynome p1, int puissance, Polynome *resultat)
 }
 
 /******************************************************************************/
+/* triPolynome - Tri un polynôme donné                                        */
+/*                                                                            */
+/* INPUT  : Le polynôme à trier / Le polynôme résultat                        */
+/* OUTPUT : néant                                                             */
+/******************************************************************************/
+
+void triPolynome(Polynome p1, Polynome *resultat)
+{
+	int i, l, indice_mini;
+	Monome tampon;
+
+	*resultat = p1;
+
+	for (i=0;i<resultat->nb_monomes;i++)
+	{
+		indice_mini = i;
+
+		for (l=indice_mini; l<resultat->nb_monomes;l++)
+		{
+			if (resultat->tab_monomes[l].degre > resultat->tab_monomes[indice_mini].degre)
+				indice_mini = l;
+		}
+
+		tampon = resultat->tab_monomes[indice_mini];
+		resultat->tab_monomes[indice_mini] = resultat->tab_monomes[i];
+		resultat->tab_monomes[i] = tampon;
+
+	}
+}
+
+/******************************************************************************/
+/* reduitPolynomeTrie - Réduit un polynôme trié                               */
+/*                                                                            */
+/* INPUT  : Le polynôme à réduire / Le polynôme résultat                      */
+/* OUTPUT : néant                                                             */
+/******************************************************************************/
+
+void reduitPolynomeTrie(Polynome p1, Polynome *resultat)
+{
+	*resultat = p1;
+}
+
+/******************************************************************************/
 /* standardiseDescription - ajoute des + devant les -, vire les char étranges */
 /* et change 'x' en 'X', remplace X par 1X                                    */
 /*                                                                            */
@@ -431,6 +564,7 @@ void puissancePolynome(Polynome p1, int puissance, Polynome *resultat)
 /* une description standardisée                                               */
 /* OUPUT : néant                                                              */
 /******************************************************************************/
+
 void standardiseDescription(char *s, char *d)
 {
 	char *l = s, *e = d;
@@ -484,6 +618,7 @@ void standardiseDescription(char *s, char *d)
 /*          p   polynôme dans lequel écrire le résultat                       */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
+
 void str2Polynome(char *str, Polynome *p)
 {
 	char *tok, *ptr;
