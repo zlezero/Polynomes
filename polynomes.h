@@ -50,6 +50,9 @@ void reduitPolynomeTrie(Polynome p1, Polynome *resultat);
 
 void Main_Menu();
 void Demonstrations();
+void Calculatrice_Menu();
+void Entree_Polynome(int i, Polynome *res);
+void Wait_For_Enter();
 void viderBuffer();
 
 

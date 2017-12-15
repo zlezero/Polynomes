@@ -159,7 +159,7 @@ void Demonstrations()
 
 	//Test reduire polynôme trié
 
-	str2Polynome("3X^5+2X^5+3X^4-3X+4", &p_Mult1);
+	str2Polynome("5X^7+3X^5+2X^5+3X^5+3X^4+3X^4+4", &p_Mult1);
 	printf("Réduction de : ");
 	affichePolynome(p_Mult1);
 	printf(" = ");
@@ -170,10 +170,7 @@ void Demonstrations()
 
 	printf("\n \n");
 
-	printf("Appuyez sur Entrée pour continuer !");
-
-	viderBuffer();
-	getchar();
+	Wait_For_Enter();
 
 }
 
@@ -181,10 +178,10 @@ void Main_Menu()
 {
 	int i = -1;
 
-	while (i < 0 || i > 3)
+	while (i <= 0 || i > 3)
 	{
 		system("clear");
-		
+
 		printf("== Ultra Polynômes Calculator == \n");
 		printf("1 - Démonstrations\n");
 		printf("2 - Calculatrice\n");
@@ -200,15 +197,105 @@ void Main_Menu()
 				i = -1;
 				break;
 			case 2:
-				printf("Calculatrice");
+				Calculatrice_Menu();
+				i = -1;
 				break;
 			case 3:
 				break;
 			default:
-				i = -1;
+				viderBuffer();
 		}
 
 	}
+}
+
+void Calculatrice_Menu()
+{
+	int i = -1;
+	Polynome resultat;
+
+	initPolynome(&resultat);
+
+	while (i <= 0 || i > 10)
+	{
+		system("clear");
+
+		printf("== Ultra Polynômes Calculator == \n");
+		printf("1 - Afficher un polynôme\n");
+		printf("2 - Multiplication d'un monôme avec un polynôme\n");
+		printf("3 - Ajouter un monôme à un polynôme\n");
+		printf("4 - Ajouter un polynôme à un autre polynôme (Algorithme 1)\n");		
+		printf("5 - Ajouter un polynôme à un autre polynôme (Algorithme 2)\n");
+		printf("6 - Multiplier un polynôme à un autre polynôme\n");
+		printf("7 - Mettre un polynôme à une puissance\n");
+		printf("8 - Trier un polynôme\n");
+		printf("9 - Réduire un polynôme\n");
+		printf("10 - Retourner au menu principal\n\n");
+
+		printf("Entrez votre proposition (1/2/3/4/5/6/7/8/9/10) : ");
+		scanf("%d", &i);
+
+		switch (i)
+		{
+			case 1:
+				Entree_Polynome(1, &resultat);
+				printf("Affichage du polynôme : ");
+				affichePolynome(resultat);
+				printf("\n");
+				Wait_For_Enter();
+				i = -1;
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
+				break;
+			case 9:
+				break;
+			case 10:
+				break;
+			default:
+				viderBuffer();
+		}
+
+	}
+}
+
+void Entree_Polynome(int i, Polynome *res)
+{
+	char polynome_entre_str[50] = "";
+	Polynome polynome_entre;
+
+	system("clear");
+	printf("Entrez le polynôme %d : ", i);
+
+	scanf("%s", polynome_entre_str);
+
+	//On traite le polynôme
+	str2Polynome(polynome_entre_str, &polynome_entre);
+	triPolynome(polynome_entre, &polynome_entre);
+	//reduitPolynomeTrie(polynome_entre, &polynome_entre);
+
+	*res = polynome_entre;
+
+	system("clear");
+
+}
+
+void Wait_For_Enter()
+{
+	printf("Appuyez sur Entrée pour continuer !");
+	viderBuffer();
+	getchar();
 }
 
 void viderBuffer()
@@ -551,7 +638,40 @@ void triPolynome(Polynome p1, Polynome *resultat)
 
 void reduitPolynomeTrie(Polynome p1, Polynome *resultat)
 {
-	*resultat = p1;
+	int i, compteur = 0;
+	
+	initPolynome(resultat);
+
+	for (i=0;i<p1.nb_monomes;i++)
+	{
+		if (i < p1.nb_monomes - 1 && p1.tab_monomes[i+1].degre == p1.tab_monomes[i].degre)
+		{
+			if (resultat->tab_monomes[i - 1].degre == p1.tab_monomes[i].degre)
+			{
+				resultat->tab_monomes[i - 1].coeff = resultat->tab_monomes[i - 1].coeff + p1.tab_monomes[i + 1].coeff;
+				resultat->tab_monomes[i - 1].degre = p1.tab_monomes[i].degre;
+
+			}
+			else
+			{
+				resultat->tab_monomes[i].coeff = p1.tab_monomes[i].coeff + p1.tab_monomes[i + 1].coeff;
+				resultat->tab_monomes[i].degre = p1.tab_monomes[i].degre;
+			}
+
+			//resultat->tab_monomes[i + 1].degre = 0;
+
+			//compteur++;
+		}
+		else
+		{
+			resultat->tab_monomes[i] = p1.tab_monomes[i];
+		}
+
+		compteur++;
+	}
+
+	//resultat->nb_monomes = p1.nb_monomes - compteur;
+	resultat->nb_monomes = 8;
 }
 
 /******************************************************************************/
