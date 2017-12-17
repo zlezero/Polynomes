@@ -211,10 +211,13 @@ void Main_Menu()
 
 void Calculatrice_Menu()
 {
-	int i = -1;
-	Polynome resultat;
+	int i = -1, puissance = 0;
+	Polynome resultat, p1, p2;
+	Monome mon;
 
 	initPolynome(&resultat);
+	initPolynome(&p1);
+	initPolynome(&p2);
 
 	while (i <= 0 || i > 10)
 	{
@@ -238,28 +241,100 @@ void Calculatrice_Menu()
 		switch (i)
 		{
 			case 1:
-				Entree_Polynome(1, &resultat);
+				Entree_Polynome(1, &resultat, 1);
 				printf("Affichage du polynôme : ");
 				affichePolynome(resultat);
-				printf("\n");
-				Wait_For_Enter();
-				i = -1;
+				Calcul_Fin(&i);
 				break;
 			case 2:
+				Entree_Monome(&mon);
+				Entree_Polynome(1, &p1, 1);
+				printf("Multiplication de %dX^%d avec ", mon.coeff, mon.degre);
+				affichePolynome(p1);
+				printf(" = ");
+				multiplieMonomePolynome(p1, mon, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 3:
+				Entree_Monome(&mon);
+				Entree_Polynome(1, &p1, 1);
+				printf("Ajout de %dX^%d avec ", mon.coeff, mon.degre);
+				affichePolynome(p1);
+				printf(" = ");
+				ajouteMonomePolynome(p1, mon, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 4:
+				Entree_Polynome(1, &p1, 1);
+				Entree_Polynome(2, &p2, 1);
+				printf("Ajout de ");
+				affichePolynome(p1);
+				printf(" avec ");
+				affichePolynome(p2);
+				printf(" = ");
+				ajoutePolynomePolynome1(p1, p2, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 5:
+				Entree_Polynome(1, &p1, 1);
+				Entree_Polynome(2, &p2, 1);
+				printf("Ajout de ");
+				affichePolynome(p1);
+				printf(" avec ");
+				affichePolynome(p2);
+				printf(" = ");
+				ajoutePolynomePolynome2(p1, p2, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 6:
+				Entree_Polynome(1, &p1, 1);
+				Entree_Polynome(2, &p2, 1);
+				printf("Multiplication de ");
+				affichePolynome(p1);
+				printf(" avec ");
+				affichePolynome(p2);
+				printf(" = ");
+				multipliePolynomePolynome(p1, p2, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 7:
+				Entree_Polynome(1, &p1, 1);
+				do
+				{
+					system("clear");
+					printf("Entrez une puissance : ");
+					scanf("%d", &puissance);
+				} while (puissance <= 0);
+				system("clear");
+				printf("Multiplication de ");
+				affichePolynome(p1);
+				printf(" à la puissance %d = ", puissance);
+				puissancePolynome(p1, puissance, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 8:
+				Entree_Polynome(1, &p1, 0);
+				printf("Tri de ");
+				affichePolynome(p1);
+				printf(" = ");
+				triPolynome(p1, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 9:
+				Entree_Polynome(1, &p1, 2);
+				printf("Réduction de ");
+				affichePolynome(p1);
+				printf(" = ");
+				triPolynome(p1, &resultat);
+				affichePolynome(resultat);
+				Calcul_Fin(&i);
 				break;
 			case 10:
 				break;
@@ -270,25 +345,65 @@ void Calculatrice_Menu()
 	}
 }
 
-void Entree_Polynome(int i, Polynome *res)
+void Calcul_Fin(int *i)
+{
+	printf("\n");
+	Wait_For_Enter();
+	*i = -1;
+}
+
+void Entree_Polynome(int i, Polynome *res, int tri) //tri = 0 Pas de tri / tri = 1 La totale / tri = 2 Pas de réduction
 {
 	char polynome_entre_str[50] = "";
 	Polynome polynome_entre;
-
+	
 	system("clear");
+
 	printf("Entrez le polynôme %d : ", i);
-
 	scanf("%s", polynome_entre_str);
-
-	//On traite le polynôme
-	str2Polynome(polynome_entre_str, &polynome_entre);
-	triPolynome(polynome_entre, &polynome_entre);
-	//reduitPolynomeTrie(polynome_entre, &polynome_entre);
+	
+	if (tri)
+	{
+		//On traite le polynôme
+		str2Polynome(polynome_entre_str, &polynome_entre);
+		triPolynome(polynome_entre, &polynome_entre);
+		//reduitPolynomeTrie(polynome_entre, &polynome_entre);
+	}
+	else if (tri == 2)
+	{
+		str2Polynome(polynome_entre_str, &polynome_entre);
+		triPolynome(polynome_entre, &polynome_entre);
+	}
+	else
+		str2Polynome(polynome_entre_str, &polynome_entre);
 
 	*res = polynome_entre;
 
 	system("clear");
 
+}
+
+void Entree_Monome(Monome *mon)
+{
+	int coeff_monome = 0, degre_monome = 0;
+	Monome monome_res;
+
+	while (degre_monome <= 0)
+	{
+		system("clear");
+
+		printf("Entrez le coefficient du monôme : ");
+		scanf("%d", &coeff_monome);
+		printf("\nEntrez le degré du monôme : ");
+		scanf("%d", &degre_monome);
+	}
+
+	monome_res.coeff = coeff_monome;
+	monome_res.degre = degre_monome;
+
+	*mon = monome_res;
+
+	system("clear");
 }
 
 void Wait_For_Enter()
