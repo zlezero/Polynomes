@@ -26,6 +26,7 @@ int main(void)
 /******************************************************************************/
 /*                                                                            */
 /*                        Fonctions des polynômes                             */
+/*                        (tous réduits et triés)                             */
 /*                                                                            */
 /******************************************************************************/
 
@@ -112,7 +113,7 @@ void multiplieMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 /******************************************************************************/
 /* ajouteMonomePolynome - Ajoute un monôme à un polynôme                      */
 /* Compléxité :                                                               */
-/* INPUT  : Monôme à ajouter + Polynôme à ajouter + Polynôme résultat         */
+/* INPUT  : Monôme à ajouter + Polynôme à ajouter  + Polynôme résultat         */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -354,7 +355,7 @@ void triPolynome(Polynome p1, Polynome *resultat)
 /******************************************************************************/
 /* reduitPolynomeTrie - Réduit un polynôme trié                               */
 /* Compléxité :                                                               */
-/* INPUT  : Le polynôme à réduire + Le polynôme résultat                      */
+/* INPUT  : Le polynôme à réduire (doit être trié) + Le polynôme résultat     */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -369,21 +370,6 @@ void reduitPolynomeTrie(Polynome p1, Polynome *resultat)
 
 		if (i < p1.nb_monomes -1 && p1.tab_monomes[i+1].degre == p1.tab_monomes[i].degre)
 		{
-			/* if (resultat->tab_monomes[i - 1].degre == p1.tab_monomes[i].degre)
-			{
-				resultat->tab_monomes[i - 1].coeff = resultat->tab_monomes[i - 1].coeff + p1.tab_monomes[i + 1].coeff;
-				resultat->tab_monomes[i - 1].degre = p1.tab_monomes[i].degre;
-
-			}
-			else
-			{
-				resultat->tab_monomes[i].coeff = p1.tab_monomes[i].coeff + p1.tab_monomes[i + 1].coeff;
-				resultat->tab_monomes[i].degre = p1.tab_monomes[i].degre;
-			}
-
-			//resultat->tab_monomes[i + 1].degre = 0;
-
-			//compteur++; */
 			compteur = i;
 			somme = p1.tab_monomes[i].coeff;
 
