@@ -44,7 +44,7 @@ void initPolynome(Polynome *p)
 
 /******************************************************************************/
 /* affichePolynome - Affiche un polynôme                                      */
-/* Compléxité :                                                               */
+/* Compléxité : O(n) avec n la taille du tableau                              */
 /* INPUT  : Polynôme à afficher                                               */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
@@ -58,9 +58,9 @@ void affichePolynome(Polynome p)
 
 	for (i = 0; i < p.nb_monomes; i++) //On boucle sur tout les différents polynômes
 	{
-		if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre == 1)
+		if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre == 1) // Si on a X
 			printf("X");
-		else if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre != 0) // Cas où c'est 1X
+		else if (p.tab_monomes[i].coeff == 1 && p.tab_monomes[i].degre != 0) // Cas où c'est 1X^n
 			printf("X^%d", p.tab_monomes[i].degre);
 		else if (!p.tab_monomes[i].degre) // Si nX⁰ ce qui veut dire que nous avons juste n
 			printf("%d", p.tab_monomes[i].coeff);
@@ -87,7 +87,7 @@ void affichePolynome(Polynome p)
 
 /******************************************************************************/
 /* multiplieMonomePolynome - Multiplie un polynôme donné par un monôme        */
-/* Compléxité :                                                               */
+/* Compléxité :          n = taille du tableau           O(n)                 */
 /* INPUT  : Polynôme à multiplier + Monôme + Polynôme résultat                */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
@@ -112,8 +112,8 @@ void multiplieMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 
 /******************************************************************************/
 /* ajouteMonomePolynome - Ajoute un monôme à un polynôme                      */
-/* Compléxité :                                                               */
-/* INPUT  : Monôme à ajouter + Polynôme à ajouter  + Polynôme résultat         */
+/* Compléxité : n = taille du tableau. dans le pire des cas O(n²)             */
+/* INPUT  : Monôme à ajouter + Polynôme à ajouter  + Polynôme résultat        */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
 
@@ -136,7 +136,7 @@ void ajouteMonomePolynome(Polynome p, Monome m, Polynome *resultat)
 		{
 			Resultat.nb_monomes += 1; //On ajoute un monôme au compte total
 
-			if (Resultat.tab_monomes[i].degre > m.degre)
+			if (Resultat.tab_monomes[i].degre > m.degre) //Si le degre du monome est inférieur 
 				i += 1;
 
 			for (l = Resultat.nb_monomes; l > i; l--) //On décale tous les monômes qui ont un degré inférieur au monôme donné
@@ -166,18 +166,18 @@ void ajoutePolynomePolynome1(Polynome p1, Polynome p2, Polynome *resultat)
 
 	Polynome Resultat, Max;
 
-	if (p1.nb_monomes == 0)
+	if (p1.nb_monomes == 0) //Le cas où un p1 est vide alors on retourne p2
 	{
 		*resultat = p2;
 		return;
 	}
-	else if (p2.nb_monomes == 0)
+	else if (p2.nb_monomes == 0) //Le cas où un p2 est vide alors on retourne p1
 	{
 		*resultat = p1;
 		return; 
 	}
 	
-	if (p2.nb_monomes > p1.nb_monomes)
+	if (p2.nb_monomes > p1.nb_monomes) //On regarde quel est le plus grand des deux polynômes
 	{
 		Resultat = p1;
 		Max = p2;
@@ -188,18 +188,18 @@ void ajoutePolynomePolynome1(Polynome p1, Polynome p2, Polynome *resultat)
 		Max = p1;
 	}
 
-	for (i = 0; i < Max.nb_monomes; i++)							   //Pour chaque monôme du polynôme donné
+	for (i = 0; i < Max.nb_monomes; i++) //Pour chaque monôme du polynôme donné
 		ajouteMonomePolynome(Resultat, Max.tab_monomes[i], &Resultat); //On ajoute le ième monôme du polynôme
 
 	*resultat = Resultat;
 }
 
-/******************************************************************************/
-/* ajoutePolynomePolynome2 - Ajoute un polynôme à un autre polynôme           */
-/* Compléxité : linéaire donc O(n*m)                                          */
-/* INPUT  : Les 2 polynômes à ajouter + Polynôme résultat                     */
-/* OUTPUT : néant                                                             */
-/******************************************************************************/
+/**********************************************************************************/
+/* ajoutePolynomePolynome2 - Ajoute un polynôme à un autre polynôme               */
+/* Compléxité : linéaire donc O(m+n)  (m & n sont les tailles des deux polynomes) */
+/* INPUT  : Les 2 polynômes à ajouter + Polynôme résultat                         */
+/* OUTPUT : néant                                                                 */
+/**********************************************************************************/
 
 void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat)
 {
@@ -225,7 +225,7 @@ void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat)
 		else //Sinon les monômes ont le même degré
 		{
 			Resultat.tab_monomes[j].coeff = p1.tab_monomes[i1].coeff + p2.tab_monomes[i2].coeff; //On ajoute alors leurs coéfficients
-			Resultat.tab_monomes[j].degre = p1.tab_monomes[i1].degre;							 //Comme les degrés sont les mêmes on met le même
+			Resultat.tab_monomes[j].degre = p1.tab_monomes[i1].degre; //Comme les degrés sont les mêmes on met le même
 			i2++;
 			i1++;
 		}
@@ -265,7 +265,7 @@ void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat)
 
 /******************************************************************************/
 /* multipliePolynomePolynome - Multiplie un polynôme à un autre polynôme      */
-/* Compléxité :                                                               */
+/* Compléxité :     O(n*(n+(n+m))                                             */
 /* INPUT  : Les 2 polynômes à multiplier + Polynôme résultat                  */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
@@ -288,7 +288,7 @@ void multipliePolynomePolynome(Polynome p1, Polynome p2, Polynome *resultat)
 
 /******************************************************************************/
 /* puissancePolynome - Met à la puissance un polynôme                         */
-/* Compléxité :                                                               */
+/* Compléxité :            O(n*complexité de multipliePolPol))                */
 /* INPUT  : Le polynôme à multiplier + La puissance + Polynôme résultat       */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
@@ -323,7 +323,7 @@ void puissancePolynome(Polynome p1, int puissance, Polynome *resultat)
 
 /******************************************************************************/
 /* triPolynome - Tri un polynôme donné                                        */
-/* Compléxité :                                                               */
+/* Compléxité :                 dans le pire des cas : O(n²)                  */
 /* INPUT  : Le polynôme à trier + Le polynôme résultat                        */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
@@ -354,7 +354,7 @@ void triPolynome(Polynome p1, Polynome *resultat)
 
 /******************************************************************************/
 /* reduitPolynomeTrie - Réduit un polynôme trié                               */
-/* Compléxité :                                                               */
+/* Compléxité :        O(n)                                                   */
 /* INPUT  : Le polynôme à réduire (doit être trié) + Le polynôme résultat     */
 /* OUTPUT : néant                                                             */
 /******************************************************************************/
