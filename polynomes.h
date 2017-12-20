@@ -41,7 +41,7 @@ void ajoutePolynomePolynome1(Polynome p1, Polynome p2, Polynome *resultat);
 void ajoutePolynomePolynome2(Polynome p1, Polynome p2, Polynome *resultat);
 void multipliePolynomePolynome(Polynome p1, Polynome p2, Polynome *resultat);
 void puissancePolynome(Polynome p1, int puissance, Polynome *resultat);
-void triPolynome(Polynome p1, Polynome *resultat);
+void triPolynome(Polynome *p1);
 void reduitPolynomeTrie(Polynome p1, Polynome *resultat);
 
 /******************************************************************************/
